@@ -1,0 +1,102 @@
+@import "../css-export.scss";
+.ul_container {
+  width: 40%;
+  text-align: center;
+  margin: 0 auto;
+  border: 1px solid $accent-color-blue;
+  border-radius: 1rem;
+  .head {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid $accent-color-blue;
+    p {
+      margin: 0;
+      padding-bottom: 0.5rem;
+      color: $text-color;
+      width: 25%;
+      text-align: center;
+      &:first-child {
+        width: 50%;
+      }
+    }
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    li {
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
+.adding {
+  width: 40%;
+  text-align: center;
+  margin: 0 auto;
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  .input {
+    &__show {
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+
+      animation: slide-down 300ms ease-out 1;
+      label {
+        width: 40%;
+        color: $text-color;
+      }
+
+      .new_user {
+        width: 40%;
+        transition: all 0.3s;
+        border: 1px solid white;
+        padding: 0.2rem;
+        &:hover {
+          border-radius: 0.3rem;
+        }
+        &:focus {
+          color: #212529;
+          //   background-color: #fff;
+          border-radius: 0.3rem;
+          outline: 0;
+          box-shadow: 0 0 0 0.2rem rgba(128, 126, 126, 0.25);
+        }
+      }
+    }
+    &__hide {
+      display: none;
+    }
+  }
+
+  .button {
+    border-radius: 1rem;
+    transition: all 0.3s;
+    width: 5rem;
+    margin: 0.5rem;
+    background-color: transparent;
+    border: 1px solid $accent-color-blue;
+    color: $text-color;
+    &:hover {
+      background-color: $text-color;
+      border-color: black;
+      color: rgb(4, 57, 44);
+    }
+  }
+}
+
+@keyframes slide-down {
+  0% {
+    opacity: 0.3;
+    transform: translateY(-1rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

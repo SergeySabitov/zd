@@ -1,0 +1,25 @@
+/* #272727 - #747474 - #FF652F - #FFE400 - #14A76C */
+@import "../css-export.scss";
+.header_container {
+  color: $text-color;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: end;
+  li {
+    margin-right: 1rem;
+    padding: 0.5rem;
+    a {
+      transition: all 0.3s;
+    }
+    a:hover {
+      cursor: pointer;
+      text-decoration: underline;
+      color: #c2c2c2;
+    }
+  }
+}

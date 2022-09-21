@@ -1,0 +1,24 @@
+/* #272727 - #747474 - #FF652F - #FFE400 - #14A76C */
+
+@import "./components/css-export.scss";
+.app {
+  background-color: $dark;
+  margin: 0;
+  padding: 0.1rem;
+  min-height: 100vh;
+  font-size: 1rem;
+  .greetings {
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 1rem;
+    color: $text-color;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  .set {
+    color: $accent-color-blue;
+    text-align: center;
+    font-size: 1.5rem;
+    margin: 1rem;
+  }
+}

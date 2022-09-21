@@ -1,0 +1,80 @@
+@import "../css-export.scss";
+.form_container {
+  position: relative;
+  top: 15vh;
+  margin: 0 auto;
+  color: $text-color;
+  border-radius: 0.5rem;
+  border: 2px solid $accent-color;
+  padding: 1rem;
+  width: 20rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  .control {
+    text-align: center;
+    padding: 0.5rem;
+    margin: 0 auto;
+
+    label {
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+    input {
+      transition: all 0.3s;
+      border: 1px solid white;
+      padding: 0.2rem;
+      &:hover {
+        border-radius: 0.3rem;
+      }
+      &:focus {
+        color: #212529;
+        background-color: #fff;
+        border-radius: 0.3rem;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(128, 126, 126, 0.25);
+      }
+    }
+  }
+  .actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 0.5rem;
+    .action {
+      color: $dark;
+      background-color: white;
+      transition: all 0.3s;
+      width: 7rem;
+      margin: 0 auto;
+      border: 0;
+
+      padding: 0.3rem;
+      &:hover {
+        border-radius: 0.5rem;
+      }
+    }
+
+    .toggle {
+      background-color: transparent;
+      border: 0;
+      color: $accent-color-blue;
+      margin-top: 0.5rem;
+      &:active {
+      }
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+.error {
+  position: relative;
+  left: 5%;
+  color: white;
+  width: 90%;
+  text-align: center;
+}
+.incorrect_data {
+  background-color: rgb(231, 183, 183);
+}
