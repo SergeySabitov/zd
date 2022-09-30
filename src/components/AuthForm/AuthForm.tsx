@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import styles from "./AuthForm.module.scss";
 import userInfo from "../types";
+import { Decryption } from "../Crypt";
 const AuthForm: React.FC<{
   setIsAuth: () => void;
   usersData: userInfo[];
@@ -23,7 +24,8 @@ const AuthForm: React.FC<{
     };
 
     const checkPassw = (el: userInfo) => {
-      let answer = el.password === userPassw.current!.value;
+      let decryptedPassw = Decryption(el.name, el.password);
+      let answer = decryptedPassw === userPassw.current!.value;
       if (!answer) {
         !incorrectData.count
           ? setIncorrectData((prev) => {

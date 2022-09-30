@@ -8,6 +8,7 @@ import OldPassw from "./components/NewPassw/OldPassw";
 import type userInfo from "./components/types";
 import Users from "./components/Users/Users";
 import chekingPasswValid from "./checkPassw";
+import { Decryption, Encryption } from "./components/Crypt";
 
 type ActionType = {
   type: string;
@@ -24,6 +25,7 @@ const reducer = (state: userInfo[], action: ActionType) => {
       });
       let newState = [...state];
       newState[index] = action.payload;
+
       return [...newState];
     case "newUser":
       let newUser = {
@@ -58,8 +60,6 @@ function App() {
 
   const [user, setUser] = useState<userInfo | null>(null);
   const [changingPassword, setChangingPassword] = useState<null | number>(null); //null - ничего не делаем; 1 - oldPassw; 2 - newPassw; 3 - updated
-
-  let content;
 
   useEffect(() => {
     // const dataFromDB = new Promise((resolve, reject) => )
@@ -96,9 +96,12 @@ function App() {
   }, [state]);
 
   const newPasswIsSet = (updatedUser: userInfo) => {
-    setUser(updatedUser);
-    // content = <h3 className={styles.set}>New password set!</h3>;
     setChangingPassword(null);
+    setUser(updatedUser);
+    updatedUser.password = Encryption(updatedUser.name, updatedUser.password);
+
+    // content = <h3 className={styles.set}>New password set!</h3>;
+    console.log("new password is set", updatedUser);
 
     dispatch({ type: "passwordUpdate", payload: updatedUser });
   };
@@ -109,10 +112,13 @@ function App() {
     setChangingPassword(null);
     setOpenList(false);
   };
+
+  let content = <></>;
   if (user) {
+    let decryptedPassw = Decryption(user.name, user.password.toString());
     if (
       user.password === 0 ||
-      !chekingPasswValid(user.password.toString(), user.anyPassword)
+      !chekingPasswValid(decryptedPassw, user.anyPassword)
     ) {
       if (openList) setOpenList(false);
       content = <NewPassw newPasswIsSet={newPasswIsSet} userData={user} />;

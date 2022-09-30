@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Decryption } from "../Crypt";
 import userInfo from "../types";
 import styles from "./NewPassw.module.scss";
 const OldPassw: React.FC<{ nextStep: () => void; userData: userInfo }> = (
@@ -12,7 +13,11 @@ const OldPassw: React.FC<{ nextStep: () => void; userData: userInfo }> = (
   };
 
   useEffect(() => {
-    if (password === props.userData.password) {
+    let decryptedPassw = Decryption(
+      props.userData.name,
+      props.userData.password
+    );
+    if (password === decryptedPassw) {
       setCorrectPassword(true);
     } else {
       if (correctPassword) setCorrectPassword(false);
