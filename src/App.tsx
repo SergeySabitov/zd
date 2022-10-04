@@ -99,10 +99,6 @@ function App() {
     setChangingPassword(null);
     setUser(updatedUser);
     updatedUser.password = Encryption(updatedUser.name, updatedUser.password);
-
-    // content = <h3 className={styles.set}>New password set!</h3>;
-    console.log("new password is set", updatedUser);
-
     dispatch({ type: "passwordUpdate", payload: updatedUser });
   };
 

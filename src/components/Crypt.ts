@@ -1,13 +1,16 @@
 const alphabet =
   "IХ>JБЛML2ш|УШ}Rё]у[CЧг#6!Д№с8+gGО=pхZhdэ0лNпФT4Bk($яднЭЙaЯов^KЮSЦsежvамnъЬИw`5чтX;-/uыГ'DАtAфWcЪПi_Щj@*Еmбю:eцHСКOРр~QE{и9ТUYщй3oqЫyз.lPFН7fVbr)ькЖЁ%1xЗ<,В&?zМ";
 
-const Encryption: any = (key: string, passw: string) => {
-  let trueKey = key
+const getKeyFromUserName = (userName: string) => {
+  return userName
     .split("")
     .map((el) => String(el.charCodeAt(0)))
     .join("")
     .split("")
     .reverse();
+};
+const Encryption: any = (userName: string, passw: string) => {
+  let key = getKeyFromUserName(userName);
   let cryptedPassw = [];
   let indexForPush;
   for (let i = 0; i < passw.length; i++) {
@@ -16,25 +19,19 @@ const Encryption: any = (key: string, passw: string) => {
       return { error: "symbol_not_found" };
     }
     indexForPush =
-      (alphabet.indexOf(trueKey[i % trueKey.length]) + alphabetIndex) %
-      alphabet.length;
+      (alphabet.indexOf(key[i % key.length]) + alphabetIndex) % alphabet.length;
     cryptedPassw.push(alphabet[indexForPush]);
   }
   return cryptedPassw.join("");
 };
 
-const Decryption: any = (key: string, cryptedPassw: string) => {
-  let trueKey = key
-    .split("")
-    .map((el) => String(el.charCodeAt(0)))
-    .join("")
-    .split("")
-    .reverse();
+const Decryption: any = (userName: string, cryptedPassw: string) => {
+  let key = getKeyFromUserName(userName);
   let passw = [];
   let indexForPush;
   for (let i = 0; i < cryptedPassw.length; i++) {
     let alphabetIndex = alphabet.indexOf(cryptedPassw[i]);
-    let keyIndex = alphabet.indexOf(trueKey[i % trueKey.length]);
+    let keyIndex = alphabet.indexOf(key[i % key.length]);
     if (keyIndex <= alphabetIndex) {
       indexForPush = alphabetIndex - keyIndex;
     } else {
