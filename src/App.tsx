@@ -10,6 +10,10 @@ import Users from "./components/Users/Users";
 import chekingPasswValid from "./checkPassw";
 import { Decryption, Encryption } from "./components/Crypt";
 
+var CryptoJS = require("crypto-js");
+
+const KEYSTRING = CryptoJS.MD5("hello world").toString();
+
 type ActionType = {
   type: string;
   payload: any;
@@ -53,6 +57,8 @@ const url =
   "https://zd-lr1-default-rtdb.europe-west1.firebasedatabase.app/usersData.json";
 
 let init = true;
+let reloadData = false;
+
 function App() {
   const [isAuth, setIsAuth] = useState(false);
   const [openList, setOpenList] = useState(false);
@@ -60,21 +66,29 @@ function App() {
 
   const [user, setUser] = useState<userInfo | null>(null);
   const [changingPassword, setChangingPassword] = useState<null | number>(null); //null - ничего не делаем; 1 - oldPassw; 2 - newPassw; 3 - updated
+  const [keyStringIsCorrect, setKeyStringCorrect] = useState(false);
+
+  const fetchingData = async (url: string) => {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Something went wrong!");
+    }
+    const responseData = await response.json();
+
+    if (responseData) {
+      dispatch({ type: "firstLoad", payload: responseData });
+    }
+  };
 
   useEffect(() => {
+    console.log(
+      CryptoJS.AES.encrypt("ADMIN", KEYSTRING, {
+        mode: CryptoJS.mode.ECB,
+      }).toString()
+    );
     // const dataFromDB = new Promise((resolve, reject) => )
-    const fetchingData = async (url: string) => {
-      const response = await fetch(url);
 
-      if (!response.ok) {
-        throw new Error("Something went wrong!");
-      }
-      const responseData = await response.json();
-
-      if (responseData) {
-        dispatch({ type: "firstLoad", payload: responseData });
-      }
-    };
     try {
       fetchingData(url);
     } catch (error) {
@@ -82,14 +96,27 @@ function App() {
     }
   }, []);
 
-  // console.log(user, "this is user");
-
   useEffect(() => {
     if (!init) {
+      let cryptedState = state.map((el) => {
+        let cryptedEl = {
+          ...el,
+          name: CryptoJS.AES.encrypt(el.name, KEYSTRING, {
+            mode: CryptoJS.mode.ECB,
+          }).toString(),
+          password:
+            el.password !== 0
+              ? CryptoJS.AES.encrypt(el.password, KEYSTRING, {
+                  mode: CryptoJS.mode.ECB,
+                }).toString()
+              : el.password,
+        };
+        return cryptedEl;
+      });
       try {
         fetch(url, {
           method: "PUT",
-          body: JSON.stringify([...state]),
+          body: JSON.stringify([...cryptedState]),
         });
       } catch {}
     } else init = false;
@@ -107,6 +134,12 @@ function App() {
     setIsAuth(false);
     setChangingPassword(null);
     setOpenList(false);
+    setKeyStringCorrect(false);
+    try {
+      fetchingData(url);
+    } catch (error) {
+      console.log("error!");
+    }
   };
 
   let content = <></>;
@@ -135,6 +168,31 @@ function App() {
       content = <NewPassw newPasswIsSet={newPasswIsSet} userData={user} />;
     }
   }
+  const checkKeyString = (keyString: string) => {
+    // получаем хеш введенной парольной фразы
+    const hashKeyString = CryptoJS.MD5(keyString).toString();
+    // расшифровываем
+    let decryptedState = state.map((el) => {
+      let decryptedEl = {
+        ...el,
+        name: CryptoJS.AES.decrypt(el.name, hashKeyString, {
+          mode: CryptoJS.mode.ECB,
+        }).toString(CryptoJS.enc.Utf8),
+        password:
+          el.password !== 0
+            ? CryptoJS.AES.decrypt(el.password, hashKeyString, {
+                mode: CryptoJS.mode.ECB,
+              }).toString(CryptoJS.enc.Utf8)
+            : el.password,
+      };
+      return decryptedEl;
+    });
+    // если есть ADMIN - ОК
+    if (decryptedState.filter((el) => el.name === "ADMIN").length > 0) {
+      setKeyStringCorrect(true);
+      dispatch({ type: "firstLoad", payload: decryptedState });
+    }
+  };
 
   return (
     <div className={styles.app}>
@@ -160,6 +218,8 @@ function App() {
             setUser={(user: userInfo) => {
               setUser(user);
             }}
+            keyStringIsCorrect={keyStringIsCorrect}
+            checkKeyString={checkKeyString}
           />
         )}
         {isAuth && !openList && (
