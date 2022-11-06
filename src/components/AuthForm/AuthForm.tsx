@@ -2,10 +2,15 @@ import { useState, useRef } from "react";
 import styles from "./AuthForm.module.scss";
 import userInfo from "../types";
 import { Decryption } from "../Crypt";
+var CryptoJS = require("crypto-js");
+
 const AuthForm: React.FC<{
   setIsAuth: () => void;
   usersData: userInfo[];
   setUser: (user: userInfo) => void;
+  keyStringIsCorrect: boolean;
+
+  checkKeyString: (keyString: string) => void;
 }> = (props) => {
   const [incorrectData, setIncorrectData] = useState<{
     status: boolean;
@@ -16,9 +21,22 @@ const AuthForm: React.FC<{
 
   const userPassw = useRef<HTMLInputElement | null>(null);
   const userName = useRef<HTMLInputElement | null>(null);
+  const keyString = useRef<HTMLInputElement | null>(null);
 
   const submitHandler = (event: React.FormEvent) => {
     event.preventDefault();
+    if (!props.keyStringIsCorrect && keyString.current) {
+      // if (
+      //   CryptoJS.MD5(keyString.current.value).toString() !== props.keyString
+      // ) {
+      //   setIncorrectData({ status: true });
+      // } else {
+      //   setIncorrectData({ status: false });
+      //   props.setKeyStringStatus();
+      // }
+      props.checkKeyString(keyString.current.value);
+      return;
+    }
     const checkName = (el: userInfo) => {
       return el.name === userName.current!.value;
     };
@@ -120,46 +138,67 @@ const AuthForm: React.FC<{
   return (
     <div className={styles.form_container}>
       <form onSubmit={submitHandler}>
-        <div className={styles.control}>
-          <label htmlFor="name">Your Name</label>
-          <input
-            placeholder="batman"
-            type="text"
-            id="name"
-            required
-            ref={userName}
-            disabled={!formAcces}
-            className={incorrectClass}
-            onFocus={focusHandler}
-          />
-        </div>
-        {isLogin && (
-          <div className={styles.control}>
-            <label htmlFor="password">Your Password</label>
-            <input
-              type="password"
-              id="password"
-              required
-              ref={userPassw}
-              disabled={!formAcces}
-              className={incorrectClass}
-              onFocus={focusHandler}
-            />
-          </div>
+        {!props.keyStringIsCorrect && (
+          <>
+            <div className={styles.control}>
+              <label htmlFor="keyString">Key string</label>
+              <input
+                placeholder="batman"
+                type="text"
+                id="keyString"
+                required
+                ref={keyString}
+                className={incorrectClass}
+                onFocus={focusHandler}
+              />
+            </div>
+            <button className={styles.action}>Ok</button>
+          </>
         )}
-        <div className={styles.actions}>
-          <button className={styles.action} disabled={!formAcces}>
-            {isLogin ? "Login" : "Create Account"}
-          </button>
-          {/* {isLoading && <p>Loading...</p>} */}
-          <button
-            type="button"
-            className={styles.toggle}
-            onClick={switchAuthModeHandler}
-          >
-            {isLogin ? "I'm new here" : "Login with existing account"}
-          </button>
-        </div>
+        {props.keyStringIsCorrect && (
+          <>
+            <div className={styles.control}>
+              <label htmlFor="name">Your Name</label>
+              <input
+                placeholder="batman"
+                type="text"
+                id="name"
+                required
+                ref={userName}
+                disabled={!formAcces}
+                className={incorrectClass}
+                onFocus={focusHandler}
+              />
+            </div>
+            {isLogin && (
+              <div className={styles.control}>
+                <label htmlFor="password">Your Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  required
+                  ref={userPassw}
+                  disabled={!formAcces}
+                  className={incorrectClass}
+                  onFocus={focusHandler}
+                />
+              </div>
+            )}
+            <div className={styles.actions}>
+              <button className={styles.action} disabled={!formAcces}>
+                {isLogin ? "Login" : "Create Account"}
+              </button>
+              {/* {isLoading && <p>Loading...</p>} */}
+              <button
+                type="button"
+                className={styles.toggle}
+                onClick={switchAuthModeHandler}
+              >
+                {isLogin ? "I'm new here" : "Login with existing account"}
+              </button>
+            </div>
+          </>
+        )}
       </form>
       {incorrectData.status && (
         <p className={styles.error}>

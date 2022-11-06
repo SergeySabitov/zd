@@ -67,6 +67,20 @@
       }
     }
   }
+  .action {
+    color: $dark;
+    background-color: white;
+    transition: all 0.3s;
+    width: 7rem;
+    margin: 0 auto;
+    border: 0;
+
+    padding: 0.3rem;
+    display: flex;
+    &:hover {
+      border-radius: 0.5rem;
+    }
+  }
 }
 .error {
   position: relative;
